@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
 <style>
-/* Layout: one route map that snakes across the page (vertical on phones); the turning point sits on the curve. A chapter card sits under the map. */
+/* Layout: one route map that snakes across the page (vertical on phones); each sentence of the pitch reveals one thing on the map. A chapter card sits under the map. */
 :root{
   --bg:#F4F6FB; --surface:#FFFFFF; --ink:#141A33; --muted:#5B6280; --line:#D6DBEA;
   --accent:#3049D6; --accent-soft:#E6E9FB;
@@ -38,15 +38,6 @@ button:focus-visible{outline:3px solid var(--route);outline-offset:2px}
 
 /* ---- map ---- */
 .map{position:relative;width:100%;container-type:inline-size}
-.map.desk .node{width:clamp(18px,2.5cqw,30px);height:clamp(18px,2.5cqw,30px);border-width:clamp(2px,.25cqw,3px)}
-.map.desk .label .pl{font-size:clamp(11px,1.4cqw,17px)}
-.map.desk .label .yr{font-size:clamp(9px,1.05cqw,12.5px)}
-.map.desk .stickers{gap:.7cqw}
-.map.desk .stickers.cluster{gap:.6cqw}
-.map.desk .tile{width:8cqw;height:4.8cqw;padding:.7cqw .8cqw;border-radius:1cqw}
-.map.desk .cluster .tile{width:5.6cqw;height:3.4cqw;padding:.45cqw .6cqw;border-radius:.8cqw}
-.map.desk .tile.word{width:auto;font-size:1.45cqw;padding-inline:1.2cqw}
-.map.desk .tile .stk{font-size:1.9cqw;right:-.8cqw;top:-1cqw}
 .map svg{display:block;width:100%;height:auto;overflow:visible}
 .road{fill:none;stroke:var(--line);stroke-width:10;stroke-linecap:round;stroke-linejoin:round}
 .road-dash{fill:none;stroke:var(--surface);stroke-width:2;stroke-dasharray:10 12;stroke-linecap:round}
@@ -56,15 +47,6 @@ button:focus-visible{outline:3px solid var(--route);outline-offset:2px}
 .traveller .plane{font-size:40px;display:none}
 .traveller.flying .plane{display:inline}
 .traveller.flying .halo,.traveller.flying .core{display:none}
-.degrees{display:flex;gap:6px;align-items:center;pointer-events:none;font-family:var(--font-mono);font-size:12.5px;white-space:nowrap;
-  background:var(--route-soft);color:var(--ink);border:1px solid var(--route);border-radius:999px;padding:4px 10px 4px 6px;opacity:0;transform-origin:center}
-.map.desk .degrees{font-size:clamp(10px,1.05cqw,13px)}
-.degrees .cap{font-size:1.5em;line-height:1;display:inline-block;opacity:0;transform:translateY(-14px) scale(.4)}
-.degrees.show{opacity:1;transition:opacity .25s}
-.degrees.show .cap{opacity:1;transform:none;transition:transform .5s cubic-bezier(.3,1.6,.5,1),opacity .2s}
-.degrees.show .cap:nth-child(2){transition-delay:.25s}
-.degrees.show .txt{animation:fadein .4s .45s both}
-@keyframes fadein{from{opacity:0}to{opacity:1}}
 @media (prefers-reduced-motion:no-preference){.traveller .halo{animation:breathe 1.8s ease-in-out infinite;transform-box:fill-box;transform-origin:center}}
 
 .layer{position:absolute;inset:0;pointer-events:none}
@@ -80,47 +62,86 @@ button:focus-visible{outline:3px solid var(--route);outline-offset:2px}
 .label.left{text-align:left}
 .label.right{text-align:right}
 
-.stickers{display:flex;gap:8px;pointer-events:none}
-.stickers.cluster{display:grid;grid-template-columns:repeat(3,auto);gap:6px}
-.tile{position:relative;background:#fff;border:1px solid var(--line);border-radius:12px;padding:8px 10px;width:96px;height:58px;display:flex;align-items:center;justify-content:center;box-shadow:0 6px 18px rgba(20,26,51,.12)}
+/* stickers: up to 2 per row; above the road they stack upwards */
+.stickers{display:flex;flex-wrap:wrap;gap:8px;width:200px;justify-content:center;pointer-events:none}
+.stickers.up{flex-wrap:wrap-reverse}
+.stickers.start{justify-content:flex-start}
+.stickers.cluster{display:grid;grid-template-columns:repeat(3,auto);gap:6px;width:auto}
+.tile{position:relative;box-sizing:border-box;background:#fff;border:1px solid var(--line);border-radius:12px;padding:8px 10px;width:96px;height:58px;display:flex;align-items:center;justify-content:center;box-shadow:0 6px 18px rgba(20,26,51,.12)}
 .cluster .tile{width:70px;height:40px;padding:6px 8px;border-radius:9px}
-.tile{box-sizing:border-box}
 .tile img{display:block;width:100%;height:100%;min-width:0;min-height:0;object-fit:contain}
 .tile .stk{position:absolute;right:-10px;top:-12px;font-size:22px;line-height:1}
-.tile.word{font-family:var(--font-display);font-weight:800;font-size:17px;color:#141A33;width:auto;padding-inline:14px}
-.stickers .tile{opacity:0;transform:scale(.3) rotate(-12deg)}
-.stickers.show .tile{opacity:1;transform:scale(1) rotate(var(--r,0deg));transition:transform .55s cubic-bezier(.3,1.6,.5,1),opacity .2s}
-.stickers.show .tile:nth-child(2){transition-delay:.08s}.stickers.show .tile:nth-child(3){transition-delay:.16s}
-.stickers.show .tile:nth-child(4){transition-delay:.24s}.stickers.show .tile:nth-child(5){transition-delay:.32s}
-.stickers.dim .tile{opacity:.55}
+.tile .tag{position:absolute;left:50%;bottom:-9px;transform:translateX(-50%);white-space:nowrap;font:500 10.5px/1 var(--font-mono);background:var(--route);color:#1d1404;padding:3px 7px;border-radius:999px}
+.tile.word{font-family:var(--font-display);font-weight:800;font-size:17px;color:#141A33}
+.tile.note{flex-direction:column;gap:2px;text-align:center;color:#141A33}
+.tile.note .e{font-size:20px;line-height:1.1;white-space:nowrap}
+.tile.note .t{font:500 10.5px/1.15 var(--font-mono);color:#3a4160}
+.cluster .tile.note .e{font-size:18px}
+.trip{display:flex;gap:3px;font-size:17px}
+.trip span{opacity:.25}
+.tile.show .trip span{animation:lit .35s both}
+.tile.show .trip span:nth-child(1){animation-delay:.3s}.tile.show .trip span:nth-child(2){animation-delay:.75s}
+.tile.show .trip span:nth-child(3){animation-delay:1.2s}.tile.show .trip span:nth-child(4){animation-delay:1.65s}
+.tile.show .trip span:nth-child(5){animation-delay:2.1s}
 
-.burst{position:absolute;font-size:26px;line-height:1;pointer-events:none;transform:translate(-50%,-50%);animation:burst 1.25s cubic-bezier(.2,.8,.3,1) forwards}
+.stickers .tile{opacity:0;transform:scale(.3) rotate(-12deg);visibility:hidden}
+.stickers .tile.show{opacity:1;visibility:visible;transform:scale(1) rotate(var(--r,0deg));transition:transform .55s cubic-bezier(.3,1.6,.5,1),opacity .2s}
+.stickers.dim .tile.show{opacity:.6}
+
+.map.desk .node{width:clamp(18px,2.5cqw,30px);height:clamp(18px,2.5cqw,30px);border-width:clamp(2px,.25cqw,3px)}
+.map.desk .label .pl{font-size:clamp(11px,1.4cqw,17px)}
+.map.desk .label .yr{font-size:clamp(9px,1.05cqw,12.5px)}
+.map.desk .stickers{gap:1.5cqw .8cqw;width:16.8cqw}
+.map.desk .stickers.cluster{gap:.6cqw;width:auto}
+.map.desk .tile{width:8cqw;height:4.8cqw;padding:.7cqw .8cqw;border-radius:1cqw}
+.map.desk .cluster .tile{width:5.6cqw;height:3.4cqw;padding:.45cqw .6cqw;border-radius:.8cqw}
+.map.desk .tile.word{font-size:1.45cqw}
+.map.desk .tile .stk{font-size:1.9cqw;right:-.8cqw;top:-1cqw}
+.map.desk .tile .tag{font-size:max(8px,.85cqw);bottom:-.75cqw;padding:.25cqw .6cqw}
+.map.desk .tile.note .e{font-size:1.7cqw}
+.map.desk .tile.note .t{font-size:max(8px,.9cqw)}
+.map.desk .cluster .tile.note .e{font-size:1.6cqw}
+.map.desk .trip{font-size:1.4cqw;gap:.25cqw}
+
+.degrees{display:flex;gap:6px;align-items:center;pointer-events:none;font-family:var(--font-mono);font-size:12.5px;white-space:nowrap;
+  background:var(--route-soft);color:var(--ink);border:1px solid var(--route);border-radius:999px;padding:4px 10px 4px 6px;opacity:0;visibility:hidden}
+.map.desk .degrees{font-size:clamp(10px,1.05cqw,13px)}
+.degrees .cap{font-size:1.5em;line-height:1;display:inline-block;opacity:0;transform:translateY(-14px) scale(.4)}
+.degrees.show{opacity:1;visibility:visible;transition:opacity .25s}
+.degrees.show .cap{opacity:1;transform:none;transition:transform .5s cubic-bezier(.3,1.6,.5,1),opacity .2s}
+.degrees.show .cap:nth-child(2){transition-delay:.25s}
+.degrees.show .txt{animation:fadein .4s .45s both}
+
 .ring{position:absolute;width:30px;height:30px;border-radius:50%;border:3px solid var(--route);transform:translate(-50%,-50%);pointer-events:none;animation:ring .8s ease-out forwards}
 
 /* ---- card ---- */
-.card{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:20px 22px;display:grid;grid-template-columns:1.2fr 1fr;gap:20px 32px;align-items:start}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:20px 22px;display:grid;grid-template-columns:1fr 1.15fr;gap:16px 32px;align-items:start}
 .card>*{min-width:0}
 @media (max-width:760px){.card{grid-template-columns:1fr}}
 .card .eyebrow{font-family:var(--font-mono);font-size:12.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--route)}
-.card h2{font-family:var(--font-display);font-weight:800;font-size:clamp(24px,3vw,34px);letter-spacing:-.015em;line-height:1.08;margin:4px 0 8px;text-wrap:balance}
-.card p{margin:0;color:var(--muted);font-size:17px;max-width:60ch}
+.card h2{font-family:var(--font-display);font-weight:800;font-size:clamp(24px,3vw,34px);letter-spacing:-.015em;line-height:1.08;margin:4px 0 10px;text-wrap:balance}
+.card p{margin:0;color:var(--muted);font-size:16px;max-width:60ch}
+.steps{display:flex;gap:6px;margin-top:12px}
+.steps i{width:22px;height:6px;border-radius:3px;background:var(--line)}
+.steps i.on{background:var(--route)}
+.steps i.now{background:var(--accent)}
 .card ul{margin:0;padding:0;list-style:none;display:grid;gap:8px}
-.card li{padding-left:18px;position:relative;font-size:15px}
-.card li::before{content:"";position:absolute;left:0;top:.62em;width:8px;height:8px;border-radius:2px;background:var(--route)}
-.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
-.chips span{font-family:var(--font-mono);font-size:12.5px;padding:4px 9px;border-radius:999px;background:var(--accent-soft);color:var(--accent)}
+.card li{padding-left:18px;position:relative;font-size:15.5px;color:var(--muted);transition:color .3s}
+.card li::before{content:"";position:absolute;left:0;top:.62em;width:8px;height:8px;border-radius:2px;background:var(--line)}
+.card li.on::before{background:var(--route)}
+.card li.now{color:var(--ink);font-weight:600}
+.card li.now::before{background:var(--accent)}
+.card li.later{visibility:hidden}
 .card.flash{animation:cardin .45s ease-out}
 .hint{font-family:var(--font-mono);font-size:12px;color:var(--muted)}
 
 
-@keyframes burst{0%{transform:translate(-50%,-50%) scale(.3);opacity:0}
-  15%{opacity:1}
-  70%{opacity:1}
-  100%{transform:translate(calc(-50% + var(--dx)),calc(-50% + var(--dy))) scale(1.15) rotate(var(--rot));opacity:0}}
 @keyframes ring{from{width:30px;height:30px;opacity:1}to{width:120px;height:120px;opacity:0}}
 @keyframes breathe{0%,100%{transform:scale(.8)}50%{transform:scale(1.35)}}
-@keyframes cardin{from{opacity:.3;transform:translateY(8px)}to{opacity:1;transform:none}}
-@media (prefers-reduced-motion:reduce){.burst,.ring{display:none}.stickers.show .tile{transition:none}.card.flash{animation:none}}
+@keyframes cardin{from{opacity:.4;transform:translateY(6px)}to{opacity:1;transform:none}}
+@keyframes fadein{from{opacity:0}to{opacity:1}}
+@keyframes lit{from{opacity:.25;transform:scale(.8)}to{opacity:1;transform:scale(1)}}
+@media (prefers-reduced-motion:reduce){.ring{display:none}.stickers .tile.show,.degrees.show .cap{transition:none}.card.flash{animation:none}.tile.show .trip span{animation:none;opacity:1}}
 </style>
 
 </head>
@@ -151,14 +172,12 @@ button:focus-visible{outline:3px solid var(--route);outline-offset:2px}
     <div>
       <div class="eyebrow" id="c-eyebrow">Career route</div>
       <h2 id="c-title">Eight stops, one direction.</h2>
-      <p id="c-line">Engineer by training, solutions engineer by choice. Click any stop on the route, or press Play.</p>
+      <p id="c-line">Engineer by training, solutions engineer by choice. Click a stop or press → to follow the story.</p>
+      <div class="steps" id="c-steps"></div>
     </div>
-    <div>
-      <ul id="c-list"><li>APIs and integrations, from pre-sales to go-live</li><li>Partner enablement</li><li>AI tools my team uses every day</li></ul>
-      <div class="chips" id="c-chips"></div>
-    </div>
+    <ul id="c-list"><li>APIs and integrations, from pre-sales to go-live</li><li>Partner enablement</li><li>AI tools my team uses every day</li></ul>
   </section>
-  <p class="hint">Click a stop · ← → to move</p>
+  <p class="hint">→ next step · ← back · click a stop to jump</p>
 </div>
 
 
@@ -166,195 +185,210 @@ button:focus-visible{outline:3px solid var(--route);outline-offset:2px}
 (function(){
 const L = n => 'logos/' + n;
 const STOPS = [
-  {id:'meknes', yr:'2015', pl:'Morocco', dx:110, dy:170, mt:0.05,
-   logos:[{src:L('ensam-meknes.png'),alt:'ENSAM Meknès'}], sticker:'🇲🇦',
-   emoji:['🇲🇦','⚙️','📐','🎓','🛠️'],
+  {id:'morocco', yr:'2015', pl:'Morocco', dx:110, dy:170,
    eyebrow:'Stop 1 · 2015 · Morocco', title:'It started at Arts et Métiers.',
-   line:'Arts et Métiers engineering school in Morocco, with one early choice: the double-degree track, so my final year would happen in France.',
-   list:['ENSAM Meknès, Arts et Métiers engineering school','Chose the France double-degree track'], chips:['Mechanical & industrial engineering']},
-  {id:'paris', yr:'2019–20', pl:'France', dx:360, dy:170, mt:0.18,
-   logos:[{src:L('am.svg'),alt:'Arts et Métiers'},{src:L('renault.svg'),alt:'Renault'}], sticker:'🇫🇷',
-   emoji:['🇫🇷','🎓','🎓','🚗','🔧'],
+   tiles:[{b:0, src:L('ensam-meknes.png'), alt:'ENSAM Meknès', stk:'🇲🇦', tag:'Engineering'},
+          {b:1, e:'🇲🇦 → 🇫🇷', t:'Double degree'}],
+   beats:[{cap:'Arts et Métiers engineering school, Morocco'},
+          {cap:'Chose the double-degree track with France'}]},
+  {id:'paris', yr:'2019–20', pl:'France', dx:360, dy:170,
    eyebrow:'Stop 2 · 2019–2020 · France', title:'Two degrees, and one realisation.',
-   line:'Good solutions need more than code. They depend on understanding what the client needs and how the business works.',
-   list:['Arts et Métiers ParisTech, MSc Industrial Engineering','Renault, 6-month engineering internship'], chips:['Double degree']},
-  {id:'skema', yr:'2021–22', pl:'SKEMA', dx:610, dy:170, mt:0.31,
-   logos:[{src:L('skema.png'),alt:'SKEMA Business School'},{src:L('loreal.svg'),alt:"L'Oréal"}], sticker:'💼',
-   emoji:['💼','📊','🤝','💄','🧠'],
+   tiles:[{b:0, src:L('am.svg'), alt:'Arts et Métiers ParisTech', stk:'🇫🇷', tag:'2nd degree'},
+          {b:1, src:L('renault.svg'), alt:'Renault', tag:'Internship'},
+          {b:2, e:'💡', t:'Beyond code'}],
+   beats:[{cap:'Final year at Arts et Métiers ParisTech: two degrees'},
+          {cap:'Six-month engineering internship at Renault'},
+          {cap:'Good solutions need the client and the business, not only code'}]},
+  {id:'skema', yr:'2021–22', pl:'SKEMA', dx:610, dy:170,
    eyebrow:'Stop 3 · 2021–2022 · Business school', title:'So I added the business side.',
-   line:'Technical skills plus business vision. During my apprenticeship at L’Oréal I integrated a platform with an external partner: my first partner project.',
-   list:['SKEMA, Specialized Master in Project Management',"L'Oréal apprenticeship: 3D artwork platform integration with a partner"], chips:['Tech + business']},
-  {id:'amadeus', yr:'2022–25', pl:'Amadeus', dx:860, dy:170, mt:0.44,
-   logos:[{src:L('amadeus.svg'),alt:'Amadeus'}], sticker:'✈️',
-   emoji:['✈️','🧳','🛫','🎫','🌍'],
+   tiles:[{b:0, src:L('skema.png'), alt:'SKEMA Business School', stk:'💼', tag:'Master'},
+          {b:1, e:'⚙️ + 📈', t:'Tech + business'},
+          {b:2, src:L('loreal.svg'), alt:"L'Oréal", tag:'Apprenticeship'}],
+   beats:[{cap:'SKEMA, Specialized Master in Project Management'},
+          {cap:'Goal: technical skills plus business vision'},
+          {cap:"L'Oréal apprenticeship: my first partner integration"}]},
+  {id:'amadeus', yr:'2022–25', pl:'Amadeus', dx:860, dy:170,
    eyebrow:'Stop 4 · 2022–2025 · Solutions Engineer', title:'Right now, someone is boarding a flight.',
-   line:'At some step of their trip (search, booking, payment, ticket, check-in) they used Amadeus. I connected airlines to it.',
-   list:['10+ airline API integration projects across Europe, the Middle East and Africa','Pre-sales demos, project management, the client’s voice to Product'], chips:['REST','SOAP / XML','EDIFACT','NDC']},
-  {id:'pivot', yr:'2025', pl:'Turning point', dx:1120, dy:335, mt:0.56, cluster:true,
-   logos:[{src:L('ocp.svg'),alt:'OCP'},{src:L('maersk.svg'),alt:'Maersk'},{src:L('renault.svg'),alt:'Renault'},{src:L('loreal.svg'),alt:"L'Oréal"},{src:L('amadeus.svg'),alt:'Amadeus'}], sticker:'',
-   emoji:['🏢','🏭','🚢','➡️','🚀'],
+   tiles:[{b:0, src:L('amadeus.svg'), alt:'Amadeus', stk:'✈️', tag:'Solutions Eng.'},
+          {b:1, trip:['🔎','🛒','💳','🎫','🛫'], t:'Search → check-in'},
+          {b:2, e:'🔌', t:'REST · SOAP · NDC'},
+          {b:3, e:'🛫 10+', t:'Airline projects'}],
+   beats:[{cap:'First role as a Solutions Engineer'},
+          {cap:'Search, book, pay, ticket, check-in: Amadeus is behind it'},
+          {cap:'Connected airlines through REST, SOAP and NDC APIs'},
+          {cap:'10+ projects: pre-sales, project management, escalations, voice to Product'}]},
+  {id:'pivot', yr:'2025', pl:'Turning point', dx:1120, dy:340, cluster:true,
    eyebrow:'Turning point · 2025', title:'From large groups to a scale-up.',
-   line:'OCP, Maersk, Renault, L’Oréal, Amadeus: I learned a lot in large groups. Next I wanted speed, ownership and a startup mindset.',
-   list:['Every company before was a large group','Looking for a faster-growing, more agile environment'], chips:['Startup mindset']},
-  {id:'brevo', yr:'2025 – today', pl:'Brevo', dx:780, dy:500, mt:0.70,
-   logos:[{src:L('brevo.png'),alt:'Brevo'}], sticker:'🤝',
-   emoji:['📧','🤝','🔌','🧩','💬'],
+   tiles:[{b:0, src:L('ocp.svg'), alt:'OCP'},{b:0, src:L('maersk.svg'), alt:'Maersk'},{b:0, src:L('renault.svg'), alt:'Renault'},
+          {b:0, src:L('loreal.svg'), alt:"L'Oréal"},{b:0, src:L('amadeus.svg'), alt:'Amadeus'},{b:1, e:'🚀', t:'Scale-up'}],
+   beats:[{cap:"OCP, Maersk, Renault, L'Oréal, Amadeus: all large groups"},
+          {cap:'Next: a faster-growing company with a startup mindset'}]},
+  {id:'brevo', yr:'2025 – today', pl:'Brevo', dx:780, dy:510,
    eyebrow:'Stop 5 · 2025 – today · CRM & marketing platform', title:'Integrations now go through partners.',
-   line:'Brevo chose to deliver enterprise integrations with partners, not only in-house. I am the solution expert for the partner, from pre-sales to go-live.',
-   list:['Design integration architectures (REST, webhooks, SFTP)','Train and support partners on client projects','Lead escalations with client and integrator','Bring partner feedback to Product'], chips:['Partner model','Enterprise']},
-  {id:'ai', yr:'in parallel', pl:'AI champion', dx:520, dy:500, mt:0.83,
-   logos:[{word:'Dust'},{word:'Claude'},{word:'MCP'}], sticker:'',
-   emoji:['🤖','✨','🧠','⚡','🛠️'],
-   eyebrow:'Stop 5 · in parallel · AI champion', title:'I build the AI tools my team uses.',
-   line:'First Dust, then Claude. A team assistant on Claude and MCP for project tracking, weekly updates, handovers and SQL troubleshooting.',
-   list:['9 skills, 10 MCP connectors','Published on Brevo’s internal plugin marketplace','Used by colleagues and partners'], chips:['Claude','Dust','MCP','Skills & agents']},
-  {id:'pennylane', yr:'next stop', pl:'Pennylane', dx:250, dy:500, mt:0.96, final:true,
-   logos:[{word:'Pennylane'}], sticker:'🚀',
-   emoji:['🧾','💶','🤝','🚀','✨'],
+   tiles:[{b:0, src:L('brevo.png'), alt:'Brevo', stk:'🤝'},
+          {b:1, e:'🏢 → 🤝 → 👤', t:'Via partners'},
+          {b:2, e:'🏗️', t:'Architecture'},
+          {b:3, e:'🎓', t:'Partner training'}],
+   beats:[{cap:'Brevo, the CRM and marketing platform'},
+          {cap:'Enterprise integrations delivered through partners'},
+          {cap:'I design the integration architecture'},
+          {cap:'I train and support partners, from pre-sales to go-live'}]},
+  {id:'ai', yr:'in parallel', pl:'AI champion', dx:520, dy:510,
+   eyebrow:'In parallel · AI champion', title:'I build the AI tools my team uses.',
+   tiles:[{b:0, w:'Dust'},{b:1, w:'Claude', stk:'✨'},{b:2, e:'🧩', t:'Skills & agents'},{b:3, w:'MCP'}],
+   beats:[{cap:"My team's AI champion, first with Dust"},
+          {cap:'Then with Claude'},
+          {cap:'Skills and agents used by colleagues and partners'},
+          {cap:'Helping define new MCP connectors'}]},
+  {id:'pennylane', yr:'next stop', pl:'Pennylane', dx:250, dy:510, final:true,
    eyebrow:'Next stop · Partner Technical Solutions Engineer', title:'Same job, the next level.',
-   line:'The partner-facing technical role I already do, in a fast-growing company where AI is central.',
-   list:['Partner pre-sales ⇄ demos, workshops, integration architecture','Escalations ⇄ critical projects with client and integrator','Ecosystem enablement ⇄ partner training, guides, FAQ','Partner voice to Product ⇄ field feedback into requirements'], chips:['APIs','Partners','AI','E-invoicing next']}
+   tiles:[{b:0, w:'Pennylane', stk:'🚀'},{b:1, e:'🤝', t:'Partner-facing'},{b:2, e:'🤖', t:'AI at the core'}],
+   beats:[{cap:'Why this role caught my attention'},
+          {cap:'Partner pre-sales, escalations, enablement, voice to Product'},
+          {cap:'A fast-growing company where AI is central'}]}
 ];
+const BEATS=[]; STOPS.forEach((s,k)=>s.beats.forEach((_,j)=>BEATS.push({k,j})));
 
 const GEO = {
-  desktop:{W:1200,H:680,d:'M110 170 L1000 170 C1160 170 1160 500 1000 500 L250 500'},
-  mobile:{W:400,H:1700,d:'M60 70 C 20 300, 100 420, 60 650 S 20 1000, 60 1250 S 100 1500, 60 1640'}
+  desktop:{W:1200,H:720,d:'M110 170 L1000 170 C1160 170 1160 510 1000 510 L250 510'},
+  mobile:{W:400,H:2200,d:'M60 80 C 20 400, 100 560, 60 850 S 20 1300, 60 1600 S 100 1950, 60 2140'}
 };
 const svg=document.getElementById('svg'), road=document.getElementById('road'), dash=document.getElementById('roadDash'),
-      prog=document.getElementById('progress'), trav=document.getElementById('traveller'), layer=document.getElementById('layer'), map=document.getElementById('map');
+      prog=document.getElementById('progress'), trav=document.getElementById('traveller'), plane=document.getElementById('plane'),
+      layer=document.getElementById('layer'), map=document.getElementById('map');
 const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
-let mode, G, total, cur=-1, curLen=0, anim=null, visited=new Set(), playTimer=null;
+let mode, G, total, pos=-1, stopAt=-1, curLen=0, anim=null, pending=-1, playTimer=null;
 
-function closestLen(x,y){let best=0,bd=1e12;for(let i=0;i<=800;i++){const l=total*i/800,p=road.getPointAtLength(l),d=(p.x-x)**2+(p.y-y)**2;if(d<bd){bd=d;best=l}}return best}
-function pct(v,max){return (v/max*100)+'%'}
+const pct=(v,m)=>(v/m*100)+'%';
+function closestLen(x,y){let best=0,bd=1e12;for(let i=0;i<=900;i++){const l=total*i/900,p=road.getPointAtLength(l),d=(p.x-x)**2+(p.y-y)**2;if(d<bd){bd=d;best=l}}return best}
+
+function makeTile(tl,j){
+  const t=document.createElement('div'); t.style.setProperty('--r',((j%2?1:-1)*(2+j%3))+'deg');
+  if(tl.src){t.className='tile'; const im=document.createElement('img'); im.src=tl.src; im.alt=tl.alt; t.appendChild(im)}
+  else if(tl.w){t.className='tile word'; t.textContent=tl.w}
+  else if(tl.trip){t.className='tile note'; const r=document.createElement('div'); r.className='trip'; tl.trip.forEach(x=>{const sp=document.createElement('span'); sp.textContent=x; r.appendChild(sp)}); t.appendChild(r);
+    const tx=document.createElement('div'); tx.className='t'; tx.textContent=tl.t; t.appendChild(tx)}
+  else {t.className='tile note'; const e=document.createElement('div'); e.className='e'; e.textContent=tl.e; t.appendChild(e);
+    if(tl.t){const tx=document.createElement('div'); tx.className='t'; tx.textContent=tl.t; t.appendChild(tx)}}
+  if(tl.stk){const s=document.createElement('span'); s.className='stk'; s.setAttribute('aria-hidden','true'); s.textContent=tl.stk; t.appendChild(s)}
+  if(tl.tag){const g=document.createElement('span'); g.className='tag'; g.textContent=tl.tag; t.appendChild(g)}
+  return t;
+}
 
 function build(){
   mode = matchMedia('(max-width:700px)').matches ? 'mobile' : 'desktop';
   G = GEO[mode]; map.classList.toggle('desk',mode==='desktop');
   svg.setAttribute('viewBox',`0 0 ${G.W} ${G.H}`);
   [road,dash,prog].forEach(p=>p.setAttribute('d',G.d));
-  total = road.getTotalLength();
-  prog.style.strokeDasharray = total;
+  total = road.getTotalLength(); prog.style.strokeDasharray = total;
   layer.innerHTML='';
   STOPS.forEach((s,k)=>{
-    if(mode==='desktop'){ s.len = closestLen(s.dx,s.dy); }
-    else { s.len = total*s.mt; }
+    s.len = mode==='desktop' ? closestLen(s.dx,s.dy) : total*(0.04 + k*0.131);
     const p = road.getPointAtLength(s.len); s.x=p.x; s.y=p.y;
     const left=pct(p.x,G.W), top=pct(p.y,G.H);
-    let lblT, stkT, lblCls='label';
-    if(mode==='mobile'){ lblT='translate(28px,-50%)'; stkT='translate(28px,32px)'; lblCls+=' left'; }
+    let lblT, stkT, lblCls='label', up=false, start=false;
+    if(mode==='mobile'){ lblT='translate(28px,-50%)'; stkT='translate(28px,34px)'; lblCls+=' left'; start=true; }
     else if(s.id==='pivot'){ lblT='translate(calc(-100% - 2.4cqw),-50%)'; stkT='translate(calc(-100% - 2.4cqw),3.2cqw)'; lblCls+=' right'; }
-    else if(s.y < G.H/2){ lblT='translate(-50%,2.1cqw)'; stkT='translate(-50%,calc(-100% - 2.3cqw))'; }
+    else if(s.y < G.H/2){ lblT='translate(-50%,2.1cqw)'; stkT='translate(-50%,calc(-100% - 2.3cqw))'; up=true; }
     else { lblT='translate(-50%,calc(-100% - 2.1cqw))'; stkT='translate(-50%,2.3cqw)'; }
     const node=document.createElement('button'); node.type='button'; node.className='node'+(s.final?' final':''); node.style.left=left; node.style.top=top;
-    node.setAttribute('aria-label',`${s.pl}, ${s.yr}`); node.addEventListener('click',()=>{stopPlay();go(k)});
+    node.setAttribute('aria-label',`${s.pl}, ${s.yr}`); node.addEventListener('click',()=>{stopPlay();clickStop(k)});
     const lbl=document.createElement('button'); lbl.type='button'; lbl.className=lblCls; lbl.tabIndex=-1; lbl.style.left=left; lbl.style.top=top; lbl.style.transform=lblT;
     lbl.innerHTML='<span class="yr"></span><span class="pl"></span>'; lbl.querySelector('.yr').textContent=s.yr; lbl.querySelector('.pl').textContent=s.pl;
-    lbl.addEventListener('click',()=>{stopPlay();go(k)});
-    const st=document.createElement('div'); st.className='stickers'+(s.cluster?' cluster':''); st.style.left=left; st.style.top=top; st.style.transform=stkT;
-    s.logos.forEach((lg,j)=>{const t=document.createElement('div'); t.className='tile'+(lg.word?' word':''); t.style.setProperty('--r',((j%2?1:-1)*(2+j))+'deg');
-      if(lg.word){t.textContent=lg.word}else{const im=document.createElement('img'); im.src=lg.src; im.alt=lg.alt; t.appendChild(im)}
-      if(j===0 && s.sticker){const e=document.createElement('span'); e.className='stk'; e.setAttribute('aria-hidden','true'); e.textContent=s.sticker; t.appendChild(e)}
-      st.appendChild(t)});
-    if(mode==='mobile' && s.cluster){st.style.gridTemplateColumns='repeat(3,auto)'}
+    lbl.addEventListener('click',()=>{stopPlay();clickStop(k)});
+    const st=document.createElement('div'); st.className='stickers'+(s.cluster?' cluster':'')+(up?' up':'')+(start?' start':'');
+    st.style.left=left; st.style.top=top; st.style.transform=stkT;
+    s.tileEls = s.tiles.map((tl,j)=>{const t=makeTile(tl,j); st.appendChild(t); return t});
     let deg=null;
     if(s.id==='paris'){
       deg=document.createElement('div'); deg.className='degrees'; deg.style.left=left; deg.style.top=top;
-      deg.style.transform = mode==='mobile' ? 'translate(28px,100px)' : 'translate(-50%,5.4cqw)';
+      deg.style.transform = mode==='mobile' ? 'translate(250px,-50%)' : 'translate(-50%,5.4cqw)';
       deg.innerHTML='<span class="cap">🎓</span><span class="cap">🎓</span><span class="txt">Two degrees</span>';
     }
     layer.append(st,lbl,node); if(deg) layer.appendChild(deg);
     s.el={node,lbl,st,deg};
   });
-  // restore state
-  STOPS.forEach((s,k)=>{ if(visited.has(k)){s.el.node.classList.add('visited'); s.el.st.classList.add('show','dim'); if(s.el.deg) s.el.deg.classList.add('show')} });
-  if(cur>=0){ curLen=STOPS[cur].len; STOPS[cur].el.node.classList.add('here'); STOPS[cur].el.st.classList.remove('dim'); }
-  else curLen=0;
-  place(curLen);
+  if(mode==='mobile'){ const d=STOPS[1].el.deg; if(d) d.style.transform='translate(28px,-170%)'; }
+  curLen = stopAt>=0 ? STOPS[stopAt].len : 0; place(curLen);
+  applyVis(-1);
 }
 
-const plane=document.getElementById('plane');
-function place(l){
-  const p=road.getPointAtLength(l); trav.setAttribute('transform',`translate(${p.x} ${p.y})`);
-  const q=road.getPointAtLength(Math.min(total,l+2)), b=road.getPointAtLength(Math.max(0,l-2));
-  const ang=Math.atan2(q.y-b.y,q.x-b.x)*180/Math.PI;
-  plane.setAttribute('transform',`rotate(${ang+45})`);
-  prog.style.strokeDashoffset = total - l;
-}
-
-function travelTo(target, done){
-  if(anim) cancelAnimationFrame(anim);
-  const from=curLen, dist=Math.abs(target-from);
-  if(reduce||dist<1){curLen=target;place(target);done&&done();return}
-  const dur=trav.classList.contains('flying')?2200:Math.min(1700,Math.max(500,dist*1.4)), t0=performance.now();
-  const ease=t=>t<.5?2*t*t:1-Math.pow(-2*t+2,2)/2;
-  const step=now=>{const t=Math.min(1,(now-t0)/dur); curLen=from+(target-from)*ease(t); place(curLen);
-    if(t<1) anim=requestAnimationFrame(step); else {anim=null; done&&done()}};
-  anim=requestAnimationFrame(step);
-}
-
-function burst(s){
-  if(reduce) return;
-  const left=pct(s.x,G.W), top=pct(s.y,G.H);
-  const r=document.createElement('div'); r.className='ring'; r.style.left=left; r.style.top=top; layer.appendChild(r); setTimeout(()=>r.remove(),900);
-}
-
-const card=document.getElementById('card');
-function fillCard(s){
-  document.getElementById('c-eyebrow').textContent=s.eyebrow;
-  document.getElementById('c-title').textContent=s.title;
-  document.getElementById('c-line').textContent=s.line;
-  const ul=document.getElementById('c-list'); ul.innerHTML=''; s.list.forEach(t=>{const li=document.createElement('li'); li.textContent=t; ul.appendChild(li)});
-  const ch=document.getElementById('c-chips'); ch.innerHTML=''; s.chips.forEach(t=>{const sp=document.createElement('span'); sp.textContent=t; ch.appendChild(sp)});
-  card.classList.remove('flash'); void card.offsetWidth; card.classList.add('flash');
-}
-
-function go(k){
-  if(k<0||k>=STOPS.length) return;
-  if(cur>=0){ STOPS[cur].el.node.classList.remove('here'); STOPS[cur].el.st.classList.add('dim'); }
-  cur=k; const s=STOPS[k];
-  fillCard(s);
-  const fly = s.id==='paris' && !reduce && s.len>curLen;
-  trav.classList.toggle('flying',fly);
-  travelTo(s.len,()=>{
-    trav.classList.remove('flying');
-    if(s.el.deg) s.el.deg.classList.add('show');
-    visited.add(k);
-    s.el.node.classList.add('visited','here');
-    s.el.st.classList.remove('dim'); s.el.st.classList.add('show');
-    burst(s);
+function shown(k){ if(pos<0) return 0; const c=BEATS[pos]; if(k<c.k) return STOPS[k].beats.length; if(k===c.k) return c.j+1; return 0; }
+function applyVis(hide){
+  STOPS.forEach((s,k)=>{
+    const n = k===hide ? 0 : shown(k);
+    s.tileEls.forEach((t,j)=>t.classList.toggle('show', s.tiles[j].b < n));
+    s.el.node.classList.toggle('visited', n>0);
+    s.el.node.classList.toggle('here', k===stopAt && k!==hide && n>0);
+    s.el.st.classList.toggle('dim', k!==stopAt);
+    if(s.el.deg) s.el.deg.classList.toggle('show', n>0);
   });
 }
 
-function reset(){
-  stopPlay(); if(anim) cancelAnimationFrame(anim);
-  visited.clear(); cur=-1; curLen=0;
-  STOPS.forEach(s=>{s.el.node.classList.remove('visited','here'); s.el.st.classList.remove('show','dim'); if(s.el.deg) s.el.deg.classList.remove('show')});
-  trav.classList.remove('flying');
-  place(0);
-  document.getElementById('c-eyebrow').textContent='Career route';
-  document.getElementById('c-title').textContent='Eight stops, one direction.';
-  document.getElementById('c-line').textContent='Engineer by training, solutions engineer by choice. Click any stop on the route, or press Play.';
+function place(l){
+  const p=road.getPointAtLength(l); trav.setAttribute('transform',`translate(${p.x} ${p.y})`);
+  const q=road.getPointAtLength(Math.min(total,l+2)), b=road.getPointAtLength(Math.max(0,l-2));
+  plane.setAttribute('transform',`rotate(${Math.atan2(q.y-b.y,q.x-b.x)*180/Math.PI+45})`);
+  prog.style.strokeDashoffset = total - l;
+}
+function travelTo(target, done){
+  if(anim) cancelAnimationFrame(anim);
+  const from=curLen, dist=Math.abs(target-from);
+  if(reduce||dist<1){curLen=target;place(target);done();return}
+  const dur=trav.classList.contains('flying')?2200:Math.min(1700,Math.max(500,dist*1.4)), t0=performance.now();
+  const ease=t=>t<.5?2*t*t:1-Math.pow(-2*t+2,2)/2;
+  const step=now=>{const t=Math.min(1,(now-t0)/dur); curLen=from+(target-from)*ease(t); place(curLen);
+    if(t<1) anim=requestAnimationFrame(step); else {anim=null; done()}};
+  anim=requestAnimationFrame(step);
+}
+function ring(s){ if(reduce) return; const r=document.createElement('div'); r.className='ring'; r.style.left=pct(s.x,G.W); r.style.top=pct(s.y,G.H); layer.appendChild(r); setTimeout(()=>r.remove(),900); }
+
+const card=document.getElementById('card');
+function fillCard(){
+  const eb=document.getElementById('c-eyebrow'), ti=document.getElementById('c-title'), li=document.getElementById('c-line'),
+        ul=document.getElementById('c-list'), steps=document.getElementById('c-steps');
+  if(pos<0){ eb.textContent='Career route'; ti.textContent='Eight stops, one direction.';
+    li.textContent='Engineer by training, solutions engineer by choice. Click a stop or press → to follow the story.'; li.hidden=false;
+    ul.innerHTML='<li>APIs and integrations, from pre-sales to go-live</li><li>Partner enablement</li><li>AI tools my team uses every day</li>';
+    steps.innerHTML=''; return; }
+  const {k,j}=BEATS[pos], s=STOPS[k];
+  if(eb.textContent!==s.eyebrow){ card.classList.remove('flash'); void card.offsetWidth; card.classList.add('flash'); }
+  eb.textContent=s.eyebrow; ti.textContent=s.title; li.hidden=true;
+  ul.innerHTML=''; s.beats.forEach((b,i)=>{const e=document.createElement('li'); e.textContent=b.cap; e.className= i<j?'on': i===j?'now':'later'; ul.appendChild(e)});
+  steps.innerHTML=''; s.beats.forEach((b,i)=>{const e=document.createElement('i'); e.className= i<j?'on': i===j?'now':''; steps.appendChild(e)});
+}
+
+function setPos(p){
+  if(p<-1||p>=BEATS.length) return;
+  pos=p; fillCard();
+  if(p<0){ if(anim) cancelAnimationFrame(anim); stopAt=-1; trav.classList.remove('flying'); curLen=0; place(0); applyVis(-1); return; }
+  const k=BEATS[p].k;
+  if(k!==stopAt){
+    const target=STOPS[k].len;
+    const fly = STOPS[k].id==='paris' && !reduce && target>curLen;
+    stopAt=k; trav.classList.toggle('flying',fly);
+    applyVis(k);
+    const token=++pending;
+    travelTo(target,()=>{ if(token!==pending) return; trav.classList.remove('flying'); applyVis(-1); ring(STOPS[k]); });
+  } else applyVis(-1);
+}
+function clickStop(k){
+  if(pos>=0 && BEATS[pos].k===k && BEATS[pos].j < STOPS[k].beats.length-1) setPos(pos+1);
+  else if(!(pos>=0 && BEATS[pos].k===k)) setPos(BEATS.findIndex(b=>b.k===k));
 }
 
 const playBtn=document.getElementById('play');
-function stopPlay(){ if(playTimer){clearInterval(playTimer); playTimer=null;} playBtn.textContent='▶ Play the journey'; }
-playBtn.addEventListener('click',()=>{
-  if(playTimer){stopPlay();return}
-  if(cur>=STOPS.length-1) reset();
-  playBtn.textContent='❚❚ Pause';
-  go(cur+1);
-  playTimer=setInterval(()=>{ if(cur>=STOPS.length-1){stopPlay();return} go(cur+1) },6500);
-});
-document.getElementById('reset').addEventListener('click',reset);
+function stopPlay(){ if(playTimer){clearTimeout(playTimer); playTimer=null;} playBtn.textContent='▶ Play the journey'; }
+function tick(){ if(pos>=BEATS.length-1){stopPlay();return} const nk=BEATS[pos+1].k, travel=nk!==stopAt; setPos(pos+1); playTimer=setTimeout(tick, travel?6000:4500); }
+playBtn.addEventListener('click',()=>{ if(playTimer){stopPlay();return} if(pos>=BEATS.length-1) setPos(-1); playBtn.textContent='❚❚ Pause'; tick(); });
+document.getElementById('reset').addEventListener('click',()=>{stopPlay(); setPos(-1)});
 document.addEventListener('keydown',e=>{
-  if(e.key==='ArrowRight'){e.preventDefault();stopPlay();go(cur+1)}
-  else if(e.key==='ArrowLeft'){e.preventDefault();stopPlay();go(Math.max(0,cur-1))}
+  if(e.key==='ArrowRight'||e.key==='PageDown'){e.preventDefault();stopPlay();setPos(pos+1)}
+  else if(e.key==='ArrowLeft'||e.key==='PageUp'){e.preventDefault();stopPlay();setPos(pos-1)}
 });
-let lastMode=null;
+let lastMode=matchMedia('(max-width:700px)').matches?'mobile':'desktop';
 addEventListener('resize',()=>{const m=matchMedia('(max-width:700px)').matches?'mobile':'desktop'; if(m!==lastMode){lastMode=m;build()}});
-lastMode = matchMedia('(max-width:700px)').matches?'mobile':'desktop';
-build();
+build(); fillCard();
 })();
 </script>
 
