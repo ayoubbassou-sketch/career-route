@@ -1,0 +1,362 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Ayoub Bassou: career route from Morocco to partner solutions engineering.">
+<style>:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;font:14px/1.4 system-ui,sans-serif}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>Ayoub Bassou Route</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: one route map that snakes across the page (vertical on phones); the turning point sits on the curve. A chapter card sits under the map. */
+:root{
+  --bg:#F4F6FB; --surface:#FFFFFF; --ink:#141A33; --muted:#5B6280; --line:#D6DBEA;
+  --accent:#3049D6; --accent-soft:#E6E9FB;
+  --route:#D9932B; --route-soft:#FBF0DE;
+  --font-display:"Bricolage Grotesque","Avenir Next","Segoe UI",system-ui,sans-serif;
+  --font-body:"Inter","Helvetica Neue",Arial,system-ui,sans-serif;
+  --font-mono:"JetBrains Mono",ui-monospace,"SF Mono",Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0D1121; --surface:#161B30; --ink:#ECEEF7; --muted:#9AA1BE; --line:#2C3354;
+  --accent:#8193FF; --accent-soft:#1E2550; --route:#F0B457; --route-soft:#3A2E17; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0D1121; --surface:#161B30; --ink:#ECEEF7; --muted:#9AA1BE; --line:#2C3354;
+  --accent:#8193FF; --accent-soft:#1E2550; --route:#F0B457; --route-soft:#3A2E17; color-scheme:dark}
+
+body{background:var(--bg);color:var(--ink);font-family:var(--font-body);font-size:16px;line-height:1.55;overflow-x:hidden}
+.wrap{max-width:1180px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:24px 40px;display:flex;flex-direction:column;gap:14px}
+
+header{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.who h1{font-family:var(--font-display);font-weight:800;font-size:clamp(30px,4.4vw,48px);letter-spacing:-.02em;line-height:1;margin:0}
+.who p{margin:6px 0 0;font-family:var(--font-mono);font-size:13px;color:var(--muted)}
+.controls{display:flex;gap:8px;flex-wrap:wrap}
+.controls button{font:600 14px var(--font-body);border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;padding:8px 14px;cursor:pointer}
+.controls button.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+button:focus-visible{outline:3px solid var(--route);outline-offset:2px}
+
+/* ---- map ---- */
+.map{position:relative;width:100%;container-type:inline-size}
+.map.desk .node{width:clamp(18px,2.5cqw,30px);height:clamp(18px,2.5cqw,30px);border-width:clamp(2px,.25cqw,3px)}
+.map.desk .label .pl{font-size:clamp(11px,1.4cqw,17px)}
+.map.desk .label .yr{font-size:clamp(9px,1.05cqw,12.5px)}
+.map.desk .stickers{gap:.7cqw}
+.map.desk .stickers.cluster{gap:.6cqw}
+.map.desk .tile{width:8cqw;height:4.8cqw;padding:.7cqw .8cqw;border-radius:1cqw}
+.map.desk .cluster .tile{width:5.6cqw;height:3.4cqw;padding:.45cqw .6cqw;border-radius:.8cqw}
+.map.desk .tile.word{width:auto;font-size:1.45cqw;padding-inline:1.2cqw}
+.map.desk .tile .stk{font-size:1.9cqw;right:-.8cqw;top:-1cqw}
+.map svg{display:block;width:100%;height:auto;overflow:visible}
+.road{fill:none;stroke:var(--line);stroke-width:10;stroke-linecap:round;stroke-linejoin:round}
+.road-dash{fill:none;stroke:var(--surface);stroke-width:2;stroke-dasharray:10 12;stroke-linecap:round}
+.progress{fill:none;stroke:var(--route);stroke-width:10;stroke-linecap:round;stroke-linejoin:round}
+.traveller .halo{fill:var(--accent);opacity:.2}
+.traveller .core{fill:var(--accent);stroke:var(--surface);stroke-width:3}
+.traveller .plane{font-size:40px;display:none}
+.traveller.flying .plane{display:inline}
+.traveller.flying .halo,.traveller.flying .core{display:none}
+.degrees{display:flex;gap:6px;align-items:center;pointer-events:none;font-family:var(--font-mono);font-size:12.5px;white-space:nowrap;
+  background:var(--route-soft);color:var(--ink);border:1px solid var(--route);border-radius:999px;padding:4px 10px 4px 6px;opacity:0;transform-origin:center}
+.map.desk .degrees{font-size:clamp(10px,1.05cqw,13px)}
+.degrees .cap{font-size:1.5em;line-height:1;display:inline-block;opacity:0;transform:translateY(-14px) scale(.4)}
+.degrees.show{opacity:1;transition:opacity .25s}
+.degrees.show .cap{opacity:1;transform:none;transition:transform .5s cubic-bezier(.3,1.6,.5,1),opacity .2s}
+.degrees.show .cap:nth-child(2){transition-delay:.25s}
+.degrees.show .txt{animation:fadein .4s .45s both}
+@keyframes fadein{from{opacity:0}to{opacity:1}}
+@media (prefers-reduced-motion:no-preference){.traveller .halo{animation:breathe 1.8s ease-in-out infinite;transform-box:fill-box;transform-origin:center}}
+
+.layer{position:absolute;inset:0;pointer-events:none}
+.layer>*{position:absolute;pointer-events:auto}
+.node{width:30px;height:30px;border-radius:50%;border:3px solid var(--accent);background:var(--surface);cursor:pointer;transform:translate(-50%,-50%);padding:0;transition:background .3s,transform .2s}
+.node:hover{transform:translate(-50%,-50%) scale(1.15)}
+.node.visited{background:var(--route);border-color:var(--route)}
+.node.here{background:var(--accent);border-color:var(--accent);box-shadow:0 0 0 6px var(--accent-soft)}
+.node.final{border-style:dashed}
+.label{cursor:pointer;background:none;border:0;padding:0;color:var(--ink);text-align:center;white-space:nowrap;font:inherit}
+.label .yr{display:block;font-family:var(--font-mono);font-size:12px;letter-spacing:.06em;color:var(--route)}
+.label .pl{display:block;font-family:var(--font-display);font-weight:600;font-size:16px;line-height:1.15}
+.label.left{text-align:left}
+.label.right{text-align:right}
+
+.stickers{display:flex;gap:8px;pointer-events:none}
+.stickers.cluster{display:grid;grid-template-columns:repeat(3,auto);gap:6px}
+.tile{position:relative;background:#fff;border:1px solid var(--line);border-radius:12px;padding:8px 10px;width:96px;height:58px;display:flex;align-items:center;justify-content:center;box-shadow:0 6px 18px rgba(20,26,51,.12)}
+.cluster .tile{width:70px;height:40px;padding:6px 8px;border-radius:9px}
+.tile{box-sizing:border-box}
+.tile img{display:block;width:100%;height:100%;min-width:0;min-height:0;object-fit:contain}
+.tile .stk{position:absolute;right:-10px;top:-12px;font-size:22px;line-height:1}
+.tile.word{font-family:var(--font-display);font-weight:800;font-size:17px;color:#141A33;width:auto;padding-inline:14px}
+.stickers .tile{opacity:0;transform:scale(.3) rotate(-12deg)}
+.stickers.show .tile{opacity:1;transform:scale(1) rotate(var(--r,0deg));transition:transform .55s cubic-bezier(.3,1.6,.5,1),opacity .2s}
+.stickers.show .tile:nth-child(2){transition-delay:.08s}.stickers.show .tile:nth-child(3){transition-delay:.16s}
+.stickers.show .tile:nth-child(4){transition-delay:.24s}.stickers.show .tile:nth-child(5){transition-delay:.32s}
+.stickers.dim .tile{opacity:.55}
+
+.burst{position:absolute;font-size:26px;line-height:1;pointer-events:none;transform:translate(-50%,-50%);animation:burst 1.25s cubic-bezier(.2,.8,.3,1) forwards}
+.ring{position:absolute;width:30px;height:30px;border-radius:50%;border:3px solid var(--route);transform:translate(-50%,-50%);pointer-events:none;animation:ring .8s ease-out forwards}
+
+/* ---- card ---- */
+.card{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:20px 22px;display:grid;grid-template-columns:1.2fr 1fr;gap:20px 32px;align-items:start}
+.card>*{min-width:0}
+@media (max-width:760px){.card{grid-template-columns:1fr}}
+.card .eyebrow{font-family:var(--font-mono);font-size:12.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--route)}
+.card h2{font-family:var(--font-display);font-weight:800;font-size:clamp(24px,3vw,34px);letter-spacing:-.015em;line-height:1.08;margin:4px 0 8px;text-wrap:balance}
+.card p{margin:0;color:var(--muted);font-size:17px;max-width:60ch}
+.card ul{margin:0;padding:0;list-style:none;display:grid;gap:8px}
+.card li{padding-left:18px;position:relative;font-size:15px}
+.card li::before{content:"";position:absolute;left:0;top:.62em;width:8px;height:8px;border-radius:2px;background:var(--route)}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
+.chips span{font-family:var(--font-mono);font-size:12.5px;padding:4px 9px;border-radius:999px;background:var(--accent-soft);color:var(--accent)}
+.card.flash{animation:cardin .45s ease-out}
+.hint{font-family:var(--font-mono);font-size:12px;color:var(--muted)}
+
+
+@keyframes burst{0%{transform:translate(-50%,-50%) scale(.3);opacity:0}
+  15%{opacity:1}
+  70%{opacity:1}
+  100%{transform:translate(calc(-50% + var(--dx)),calc(-50% + var(--dy))) scale(1.15) rotate(var(--rot));opacity:0}}
+@keyframes ring{from{width:30px;height:30px;opacity:1}to{width:120px;height:120px;opacity:0}}
+@keyframes breathe{0%,100%{transform:scale(.8)}50%{transform:scale(1.35)}}
+@keyframes cardin{from{opacity:.3;transform:translateY(8px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){.burst,.ring{display:none}.stickers.show .tile{transition:none}.card.flash{animation:none}}
+</style>
+
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="who">
+      <h1>Ayoub Bassou</h1>
+      <p>From Morocco to Pennylane · Partner Technical Solutions Engineer</p>
+    </div>
+    <div class="controls">
+      <button type="button" id="play" class="primary">▶ Play the journey</button>
+      <button type="button" id="reset">Reset</button>
+    </div>
+  </header>
+
+  <div class="map" id="map">
+    <svg id="svg" aria-hidden="true">
+      <path class="road" id="road"/>
+      <path class="road-dash" id="roadDash"/>
+      <path class="progress" id="progress"/>
+      <g class="traveller" id="traveller"><circle class="halo" r="20"/><circle class="core" r="9"/><text class="plane" id="plane" x="0" y="0" text-anchor="middle" dominant-baseline="central">✈️</text></g>
+    </svg>
+    <div class="layer" id="layer"></div>
+  </div>
+
+  <section class="card" id="card" aria-live="polite">
+    <div>
+      <div class="eyebrow" id="c-eyebrow">Career route</div>
+      <h2 id="c-title">Eight stops, one direction.</h2>
+      <p id="c-line">Engineer by training, solutions engineer by choice. Click any stop on the route, or press Play.</p>
+    </div>
+    <div>
+      <ul id="c-list"><li>APIs and integrations, from pre-sales to go-live</li><li>Partner enablement</li><li>AI tools my team uses every day</li></ul>
+      <div class="chips" id="c-chips"></div>
+    </div>
+  </section>
+  <p class="hint">Click a stop · ← → to move</p>
+</div>
+
+
+<script>
+(function(){
+const L = n => 'logos/' + n;
+const STOPS = [
+  {id:'meknes', yr:'2015', pl:'Morocco', dx:110, dy:170, mt:0.05,
+   logos:[{src:L('ensam-meknes.png'),alt:'ENSAM Meknès'}], sticker:'🇲🇦',
+   emoji:['🇲🇦','⚙️','📐','🎓','🛠️'],
+   eyebrow:'Stop 1 · 2015 · Morocco', title:'It started at Arts et Métiers.',
+   line:'Arts et Métiers engineering school in Morocco, with one early choice: the double-degree track, so my final year would happen in France.',
+   list:['ENSAM Meknès, Arts et Métiers engineering school','Chose the France double-degree track'], chips:['Mechanical & industrial engineering']},
+  {id:'paris', yr:'2019–20', pl:'France', dx:360, dy:170, mt:0.18,
+   logos:[{src:L('am.svg'),alt:'Arts et Métiers'},{src:L('renault.svg'),alt:'Renault'}], sticker:'🇫🇷',
+   emoji:['🇫🇷','🎓','🎓','🚗','🔧'],
+   eyebrow:'Stop 2 · 2019–2020 · France', title:'Two degrees, and one realisation.',
+   line:'Good solutions need more than code. They depend on understanding what the client needs and how the business works.',
+   list:['Arts et Métiers ParisTech, MSc Industrial Engineering','Renault, 6-month engineering internship'], chips:['Double degree']},
+  {id:'skema', yr:'2021–22', pl:'SKEMA', dx:610, dy:170, mt:0.31,
+   logos:[{src:L('skema.png'),alt:'SKEMA Business School'},{src:L('loreal.svg'),alt:"L'Oréal"}], sticker:'💼',
+   emoji:['💼','📊','🤝','💄','🧠'],
+   eyebrow:'Stop 3 · 2021–2022 · Business school', title:'So I added the business side.',
+   line:'Technical skills plus business vision. During my apprenticeship at L’Oréal I integrated a platform with an external partner: my first partner project.',
+   list:['SKEMA, Specialized Master in Project Management',"L'Oréal apprenticeship: 3D artwork platform integration with a partner"], chips:['Tech + business']},
+  {id:'amadeus', yr:'2022–25', pl:'Amadeus', dx:860, dy:170, mt:0.44,
+   logos:[{src:L('amadeus.svg'),alt:'Amadeus'}], sticker:'✈️',
+   emoji:['✈️','🧳','🛫','🎫','🌍'],
+   eyebrow:'Stop 4 · 2022–2025 · Solutions Engineer', title:'Right now, someone is boarding a flight.',
+   line:'At some step of their trip (search, booking, payment, ticket, check-in) they used Amadeus. I connected airlines to it.',
+   list:['10+ airline API integration projects across Europe, the Middle East and Africa','Pre-sales demos, project management, the client’s voice to Product'], chips:['REST','SOAP / XML','EDIFACT','NDC']},
+  {id:'pivot', yr:'2025', pl:'Turning point', dx:1120, dy:335, mt:0.56, cluster:true,
+   logos:[{src:L('ocp.svg'),alt:'OCP'},{src:L('maersk.svg'),alt:'Maersk'},{src:L('renault.svg'),alt:'Renault'},{src:L('loreal.svg'),alt:"L'Oréal"},{src:L('amadeus.svg'),alt:'Amadeus'}], sticker:'',
+   emoji:['🏢','🏭','🚢','➡️','🚀'],
+   eyebrow:'Turning point · 2025', title:'From large groups to a scale-up.',
+   line:'OCP, Maersk, Renault, L’Oréal, Amadeus: I learned a lot in large groups. Next I wanted speed, ownership and a startup mindset.',
+   list:['Every company before was a large group','Looking for a faster-growing, more agile environment'], chips:['Startup mindset']},
+  {id:'brevo', yr:'2025 – today', pl:'Brevo', dx:780, dy:500, mt:0.70,
+   logos:[{src:L('brevo.png'),alt:'Brevo'}], sticker:'🤝',
+   emoji:['📧','🤝','🔌','🧩','💬'],
+   eyebrow:'Stop 5 · 2025 – today · CRM & marketing platform', title:'Integrations now go through partners.',
+   line:'Brevo chose to deliver enterprise integrations with partners, not only in-house. I am the solution expert for the partner, from pre-sales to go-live.',
+   list:['Design integration architectures (REST, webhooks, SFTP)','Train and support partners on client projects','Lead escalations with client and integrator','Bring partner feedback to Product'], chips:['Partner model','Enterprise']},
+  {id:'ai', yr:'in parallel', pl:'AI champion', dx:520, dy:500, mt:0.83,
+   logos:[{word:'Dust'},{word:'Claude'},{word:'MCP'}], sticker:'',
+   emoji:['🤖','✨','🧠','⚡','🛠️'],
+   eyebrow:'Stop 5 · in parallel · AI champion', title:'I build the AI tools my team uses.',
+   line:'First Dust, then Claude. A team assistant on Claude and MCP for project tracking, weekly updates, handovers and SQL troubleshooting.',
+   list:['9 skills, 10 MCP connectors','Published on Brevo’s internal plugin marketplace','Used by colleagues and partners'], chips:['Claude','Dust','MCP','Skills & agents']},
+  {id:'pennylane', yr:'next stop', pl:'Pennylane', dx:250, dy:500, mt:0.96, final:true,
+   logos:[{word:'Pennylane'}], sticker:'🚀',
+   emoji:['🧾','💶','🤝','🚀','✨'],
+   eyebrow:'Next stop · Partner Technical Solutions Engineer', title:'Same job, the next level.',
+   line:'The partner-facing technical role I already do, in a fast-growing company where AI is central.',
+   list:['Partner pre-sales ⇄ demos, workshops, integration architecture','Escalations ⇄ critical projects with client and integrator','Ecosystem enablement ⇄ partner training, guides, FAQ','Partner voice to Product ⇄ field feedback into requirements'], chips:['APIs','Partners','AI','E-invoicing next']}
+];
+
+const GEO = {
+  desktop:{W:1200,H:680,d:'M110 170 L1000 170 C1160 170 1160 500 1000 500 L250 500'},
+  mobile:{W:400,H:1700,d:'M60 70 C 20 300, 100 420, 60 650 S 20 1000, 60 1250 S 100 1500, 60 1640'}
+};
+const svg=document.getElementById('svg'), road=document.getElementById('road'), dash=document.getElementById('roadDash'),
+      prog=document.getElementById('progress'), trav=document.getElementById('traveller'), layer=document.getElementById('layer'), map=document.getElementById('map');
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+let mode, G, total, cur=-1, curLen=0, anim=null, visited=new Set(), playTimer=null;
+
+function closestLen(x,y){let best=0,bd=1e12;for(let i=0;i<=800;i++){const l=total*i/800,p=road.getPointAtLength(l),d=(p.x-x)**2+(p.y-y)**2;if(d<bd){bd=d;best=l}}return best}
+function pct(v,max){return (v/max*100)+'%'}
+
+function build(){
+  mode = matchMedia('(max-width:700px)').matches ? 'mobile' : 'desktop';
+  G = GEO[mode]; map.classList.toggle('desk',mode==='desktop');
+  svg.setAttribute('viewBox',`0 0 ${G.W} ${G.H}`);
+  [road,dash,prog].forEach(p=>p.setAttribute('d',G.d));
+  total = road.getTotalLength();
+  prog.style.strokeDasharray = total;
+  layer.innerHTML='';
+  STOPS.forEach((s,k)=>{
+    if(mode==='desktop'){ s.len = closestLen(s.dx,s.dy); }
+    else { s.len = total*s.mt; }
+    const p = road.getPointAtLength(s.len); s.x=p.x; s.y=p.y;
+    const left=pct(p.x,G.W), top=pct(p.y,G.H);
+    let lblT, stkT, lblCls='label';
+    if(mode==='mobile'){ lblT='translate(28px,-50%)'; stkT='translate(28px,32px)'; lblCls+=' left'; }
+    else if(s.id==='pivot'){ lblT='translate(calc(-100% - 2.4cqw),-50%)'; stkT='translate(calc(-100% - 2.4cqw),3.2cqw)'; lblCls+=' right'; }
+    else if(s.y < G.H/2){ lblT='translate(-50%,2.1cqw)'; stkT='translate(-50%,calc(-100% - 2.3cqw))'; }
+    else { lblT='translate(-50%,calc(-100% - 2.1cqw))'; stkT='translate(-50%,2.3cqw)'; }
+    const node=document.createElement('button'); node.type='button'; node.className='node'+(s.final?' final':''); node.style.left=left; node.style.top=top;
+    node.setAttribute('aria-label',`${s.pl}, ${s.yr}`); node.addEventListener('click',()=>{stopPlay();go(k)});
+    const lbl=document.createElement('button'); lbl.type='button'; lbl.className=lblCls; lbl.tabIndex=-1; lbl.style.left=left; lbl.style.top=top; lbl.style.transform=lblT;
+    lbl.innerHTML='<span class="yr"></span><span class="pl"></span>'; lbl.querySelector('.yr').textContent=s.yr; lbl.querySelector('.pl').textContent=s.pl;
+    lbl.addEventListener('click',()=>{stopPlay();go(k)});
+    const st=document.createElement('div'); st.className='stickers'+(s.cluster?' cluster':''); st.style.left=left; st.style.top=top; st.style.transform=stkT;
+    s.logos.forEach((lg,j)=>{const t=document.createElement('div'); t.className='tile'+(lg.word?' word':''); t.style.setProperty('--r',((j%2?1:-1)*(2+j))+'deg');
+      if(lg.word){t.textContent=lg.word}else{const im=document.createElement('img'); im.src=lg.src; im.alt=lg.alt; t.appendChild(im)}
+      if(j===0 && s.sticker){const e=document.createElement('span'); e.className='stk'; e.setAttribute('aria-hidden','true'); e.textContent=s.sticker; t.appendChild(e)}
+      st.appendChild(t)});
+    if(mode==='mobile' && s.cluster){st.style.gridTemplateColumns='repeat(3,auto)'}
+    let deg=null;
+    if(s.id==='paris'){
+      deg=document.createElement('div'); deg.className='degrees'; deg.style.left=left; deg.style.top=top;
+      deg.style.transform = mode==='mobile' ? 'translate(28px,100px)' : 'translate(-50%,5.4cqw)';
+      deg.innerHTML='<span class="cap">🎓</span><span class="cap">🎓</span><span class="txt">Two degrees</span>';
+    }
+    layer.append(st,lbl,node); if(deg) layer.appendChild(deg);
+    s.el={node,lbl,st,deg};
+  });
+  // restore state
+  STOPS.forEach((s,k)=>{ if(visited.has(k)){s.el.node.classList.add('visited'); s.el.st.classList.add('show','dim'); if(s.el.deg) s.el.deg.classList.add('show')} });
+  if(cur>=0){ curLen=STOPS[cur].len; STOPS[cur].el.node.classList.add('here'); STOPS[cur].el.st.classList.remove('dim'); }
+  else curLen=0;
+  place(curLen);
+}
+
+const plane=document.getElementById('plane');
+function place(l){
+  const p=road.getPointAtLength(l); trav.setAttribute('transform',`translate(${p.x} ${p.y})`);
+  const q=road.getPointAtLength(Math.min(total,l+2)), b=road.getPointAtLength(Math.max(0,l-2));
+  const ang=Math.atan2(q.y-b.y,q.x-b.x)*180/Math.PI;
+  plane.setAttribute('transform',`rotate(${ang+45})`);
+  prog.style.strokeDashoffset = total - l;
+}
+
+function travelTo(target, done){
+  if(anim) cancelAnimationFrame(anim);
+  const from=curLen, dist=Math.abs(target-from);
+  if(reduce||dist<1){curLen=target;place(target);done&&done();return}
+  const dur=trav.classList.contains('flying')?2200:Math.min(1700,Math.max(500,dist*1.4)), t0=performance.now();
+  const ease=t=>t<.5?2*t*t:1-Math.pow(-2*t+2,2)/2;
+  const step=now=>{const t=Math.min(1,(now-t0)/dur); curLen=from+(target-from)*ease(t); place(curLen);
+    if(t<1) anim=requestAnimationFrame(step); else {anim=null; done&&done()}};
+  anim=requestAnimationFrame(step);
+}
+
+function burst(s){
+  if(reduce) return;
+  const left=pct(s.x,G.W), top=pct(s.y,G.H);
+  const r=document.createElement('div'); r.className='ring'; r.style.left=left; r.style.top=top; layer.appendChild(r); setTimeout(()=>r.remove(),900);
+}
+
+const card=document.getElementById('card');
+function fillCard(s){
+  document.getElementById('c-eyebrow').textContent=s.eyebrow;
+  document.getElementById('c-title').textContent=s.title;
+  document.getElementById('c-line').textContent=s.line;
+  const ul=document.getElementById('c-list'); ul.innerHTML=''; s.list.forEach(t=>{const li=document.createElement('li'); li.textContent=t; ul.appendChild(li)});
+  const ch=document.getElementById('c-chips'); ch.innerHTML=''; s.chips.forEach(t=>{const sp=document.createElement('span'); sp.textContent=t; ch.appendChild(sp)});
+  card.classList.remove('flash'); void card.offsetWidth; card.classList.add('flash');
+}
+
+function go(k){
+  if(k<0||k>=STOPS.length) return;
+  if(cur>=0){ STOPS[cur].el.node.classList.remove('here'); STOPS[cur].el.st.classList.add('dim'); }
+  cur=k; const s=STOPS[k];
+  fillCard(s);
+  const fly = s.id==='paris' && !reduce && s.len>curLen;
+  trav.classList.toggle('flying',fly);
+  travelTo(s.len,()=>{
+    trav.classList.remove('flying');
+    if(s.el.deg) s.el.deg.classList.add('show');
+    visited.add(k);
+    s.el.node.classList.add('visited','here');
+    s.el.st.classList.remove('dim'); s.el.st.classList.add('show');
+    burst(s);
+  });
+}
+
+function reset(){
+  stopPlay(); if(anim) cancelAnimationFrame(anim);
+  visited.clear(); cur=-1; curLen=0;
+  STOPS.forEach(s=>{s.el.node.classList.remove('visited','here'); s.el.st.classList.remove('show','dim'); if(s.el.deg) s.el.deg.classList.remove('show')});
+  trav.classList.remove('flying');
+  place(0);
+  document.getElementById('c-eyebrow').textContent='Career route';
+  document.getElementById('c-title').textContent='Eight stops, one direction.';
+  document.getElementById('c-line').textContent='Engineer by training, solutions engineer by choice. Click any stop on the route, or press Play.';
+}
+
+const playBtn=document.getElementById('play');
+function stopPlay(){ if(playTimer){clearInterval(playTimer); playTimer=null;} playBtn.textContent='▶ Play the journey'; }
+playBtn.addEventListener('click',()=>{
+  if(playTimer){stopPlay();return}
+  if(cur>=STOPS.length-1) reset();
+  playBtn.textContent='❚❚ Pause';
+  go(cur+1);
+  playTimer=setInterval(()=>{ if(cur>=STOPS.length-1){stopPlay();return} go(cur+1) },6500);
+});
+document.getElementById('reset').addEventListener('click',reset);
+document.addEventListener('keydown',e=>{
+  if(e.key==='ArrowRight'){e.preventDefault();stopPlay();go(cur+1)}
+  else if(e.key==='ArrowLeft'){e.preventDefault();stopPlay();go(Math.max(0,cur-1))}
+});
+let lastMode=null;
+addEventListener('resize',()=>{const m=matchMedia('(max-width:700px)').matches?'mobile':'desktop'; if(m!==lastMode){lastMode=m;build()}});
+lastMode = matchMedia('(max-width:700px)').matches?'mobile':'desktop';
+build();
+})();
+</script>
+
+</body>
+</html>
