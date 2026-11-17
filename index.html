@@ -153,7 +153,6 @@ button:focus-visible{outline:3px solid var(--route);outline-offset:2px}
       <p>From Morocco to Pennylane · Partner Technical Solutions Engineer</p>
     </div>
     <div class="controls">
-      <button type="button" id="play" class="primary">▶ Play the journey</button>
       <button type="button" id="reset">Reset</button>
     </div>
   </header>
@@ -377,10 +376,7 @@ function clickStop(k){
   else if(!(pos>=0 && BEATS[pos].k===k)) setPos(BEATS.findIndex(b=>b.k===k));
 }
 
-const playBtn=document.getElementById('play');
-function stopPlay(){ if(playTimer){clearTimeout(playTimer); playTimer=null;} playBtn.textContent='▶ Play the journey'; }
-function tick(){ if(pos>=BEATS.length-1){stopPlay();return} const nk=BEATS[pos+1].k, travel=nk!==stopAt; setPos(pos+1); playTimer=setTimeout(tick, travel?6000:4500); }
-playBtn.addEventListener('click',()=>{ if(playTimer){stopPlay();return} if(pos>=BEATS.length-1) setPos(-1); playBtn.textContent='❚❚ Pause'; tick(); });
+function stopPlay(){}
 document.getElementById('reset').addEventListener('click',()=>{stopPlay(); setPos(-1)});
 document.addEventListener('keydown',e=>{
   if(e.key==='ArrowRight'||e.key==='PageDown'){e.preventDefault();stopPlay();setPos(pos+1)}
